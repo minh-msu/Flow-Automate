@@ -1,0 +1,134 @@
+{
+  "$schema": "https://power-automate-tools.local/flow-editor.json#",
+  "connectionReferences": {
+    "shared_excelonlinebusiness": {
+      "connectionName": "shared-excelonlinebu-77e5c52a-27f8-427a-b2ab-3ceac17fe8e7",
+      "source": "Invoker",
+      "id": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness",
+      "displayName": "Excel Online (Business)",
+      "iconUri": "https://connectoricons-prod.azureedge.net/releases/v1.0.1680/1.0.1680.3652/excelonlinebusiness/icon.png",
+      "brandColor": "#107C41",
+      "tier": "Standard"
+    },
+    "shared_excelonlinebusiness-1": {
+      "connectionName": "shared-excelonlinebu-49a877fb-5a5c-43e5-a1c9-a7c016b36500",
+      "source": "Invoker",
+      "id": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness",
+      "displayName": "Excel Online (Business)",
+      "iconUri": "https://connectoricons-prod.azureedge.net/releases/v1.0.1680/1.0.1680.3652/excelonlinebusiness/icon.png",
+      "brandColor": "#107C41",
+      "tier": "Standard"
+    }
+  },
+  "definition": {
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+    "contentVersion": "undefined",
+    "parameters": {
+      "$authentication": {
+        "defaultValue": {},
+        "type": "SecureObject"
+      },
+      "$connections": {
+        "defaultValue": {},
+        "type": "Object"
+      }
+    },
+    "triggers": {
+      "manual": {
+        "type": "Request",
+        "kind": "Button",
+        "inputs": {
+          "schema": {
+            "type": "object",
+            "properties": {},
+            "required": []
+          }
+        }
+      }
+    },
+    "actions": {
+      "List_rows_present_in_Student_DB": {
+        "runAfter": {},
+        "metadata": {
+          "01OCVAJTSAMK2XVYJSM5AJ52RMXZHMW5IA": "/College.xlsx",
+          "tableId": "{A4ACAE01-3AF3-4052-AD8A-592D67FEAAF0}",
+          "01OCVAJTQTNZ7RKGYA7BCYJ23VZZ6X6E6N": "/Student Funding.xlsx"
+        },
+        "type": "OpenApiConnection",
+        "inputs": {
+          "parameters": {
+            "source": "me",
+            "drive": "b!6sxe92Tsgk-lgujidNdpfKWxqzZR319MgjdZB7WLRB3JklX4rGyjQpjsnpBJOVrI",
+            "file": "01OCVAJTQTNZ7RKGYA7BCYJ23VZZ6X6E6N",
+            "table": "{A4ACAE01-3AF3-4052-AD8A-592D67FEAAF0}"
+          },
+          "host": {
+            "apiId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness",
+            "connectionName": "shared_excelonlinebusiness",
+            "operationId": "GetItems"
+          },
+          "authentication": {
+            "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']",
+            "type": "Raw"
+          }
+        }
+      },
+      "List_rows_present_in_Funding_DB": {
+        "runAfter": {
+          "List_rows_present_in_Student_DB": [
+            "Succeeded"
+          ]
+        },
+        "metadata": {
+          "01OCVAJTQTNZ7RKGYA7BCYJ23VZZ6X6E6N": "/Student Funding.xlsx",
+          "tableId": "{912FC4EE-00C3-4B6F-A9C7-4D82411962E7}"
+        },
+        "type": "OpenApiConnection",
+        "inputs": {
+          "parameters": {
+            "source": "me",
+            "drive": "b!6sxe92Tsgk-lgujidNdpfKWxqzZR319MgjdZB7WLRB3JklX4rGyjQpjsnpBJOVrI",
+            "file": "01OCVAJTQTNZ7RKGYA7BCYJ23VZZ6X6E6N",
+            "table": "{912FC4EE-00C3-4B6F-A9C7-4D82411962E7}"
+          },
+          "host": {
+            "apiId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness",
+            "connectionName": "shared_excelonlinebusiness-1",
+            "operationId": "GetItems"
+          },
+          "authentication": {
+            "value": "@json(decodeBase64(triggerOutputs().headers['X-MS-APIM-Tokens']))['$ConnectionKey']",
+            "type": "Raw"
+          }
+        }
+      },
+      "For_each_in_Funding_DB": {
+        "foreach": "@outputs('List_rows_present_in_Funding_DB')?['body/value']",
+        "actions": {
+          "For_each_in_Student_DB": {
+            "foreach": "@outputs('List_rows_present_in_Student_DB')?['body/value']",
+            "actions": {
+              "Filter_array": {
+                "type": "Query",
+                "inputs": {
+                  "from": [
+                    "@outputs('List_rows_present_in_Funding_DB')?['body/value']",
+                    "@outputs('List_rows_present_in_Student_DB')?['body/value']"
+                  ],
+                  "where": "@equals(items('For_each_in_Funding_DB')['Faculty PI'],items('For_each_in_Student_DB')?['Faculty Mentor'])"
+                }
+              }
+            },
+            "type": "Foreach"
+          }
+        },
+        "runAfter": {
+          "List_rows_present_in_Funding_DB": [
+            "Succeeded"
+          ]
+        },
+        "type": "Foreach"
+      }
+    }
+  }
+}
