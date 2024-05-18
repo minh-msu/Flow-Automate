@@ -50,16 +50,16 @@
       "List_rows_present_in_Student_DB": {
         "runAfter": {},
         "metadata": {
-          "01OCVAJTSAMK2XVYJSM5AJ52RMXZHMW5IA": "/College.xlsx",
           "tableId": "{A4ACAE01-3AF3-4052-AD8A-592D67FEAAF0}",
-          "01OCVAJTQTNZ7RKGYA7BCYJ23VZZ6X6E6N": "/Student Funding.xlsx"
+          "01OCVAJTQTNZ7RKGYA7BCYJ23VZZ6X6E6N": "/Student Funding.xlsx",
+          "01DCBWCGFUP2JM4XZQ75A27CWH6WSBLM5M": "/CMSETech/Student Funding.xlsx"
         },
         "type": "OpenApiConnection",
         "inputs": {
           "parameters": {
-            "source": "me",
-            "drive": "b!6sxe92Tsgk-lgujidNdpfKWxqzZR319MgjdZB7WLRB3JklX4rGyjQpjsnpBJOVrI",
-            "file": "01OCVAJTQTNZ7RKGYA7BCYJ23VZZ6X6E6N",
+            "source": "sites/michiganstate.sharepoint.com,56381d72-8f2e-4ff2-b7c5-04cfaf2f71a6,d0b170e4-fe85-4f62-9113-62b514a4af23",
+            "drive": "b!ch04Vi6P8k-3xQTPry9xpuRwsdCF_mJPkRNitRSkryPvWt7pyK4zRIOLECD8gw_0",
+            "file": "01DCBWCGFUP2JM4XZQ75A27CWH6WSBLM5M",
             "table": "{A4ACAE01-3AF3-4052-AD8A-592D67FEAAF0}"
           },
           "host": {
@@ -81,14 +81,15 @@
         },
         "metadata": {
           "01OCVAJTQTNZ7RKGYA7BCYJ23VZZ6X6E6N": "/Student Funding.xlsx",
-          "tableId": "{912FC4EE-00C3-4B6F-A9C7-4D82411962E7}"
+          "tableId": "{912FC4EE-00C3-4B6F-A9C7-4D82411962E7}",
+          "01DCBWCGFUP2JM4XZQ75A27CWH6WSBLM5M": "/CMSETech/Student Funding.xlsx"
         },
         "type": "OpenApiConnection",
         "inputs": {
           "parameters": {
-            "source": "me",
-            "drive": "b!6sxe92Tsgk-lgujidNdpfKWxqzZR319MgjdZB7WLRB3JklX4rGyjQpjsnpBJOVrI",
-            "file": "01OCVAJTQTNZ7RKGYA7BCYJ23VZZ6X6E6N",
+            "source": "groups/26ebebad-1727-4d76-834e-7aaeae68e632",
+            "drive": "b!ch04Vi6P8k-3xQTPry9xpuRwsdCF_mJPkRNitRSkryPvWt7pyK4zRIOLECD8gw_0",
+            "file": "01DCBWCGFUP2JM4XZQ75A27CWH6WSBLM5M",
             "table": "{912FC4EE-00C3-4B6F-A9C7-4D82411962E7}"
           },
           "host": {
@@ -111,10 +112,7 @@
               "Filter_array": {
                 "type": "Query",
                 "inputs": {
-                  "from": [
-                    "@outputs('List_rows_present_in_Funding_DB')?['body/value']",
-                    "@outputs('List_rows_present_in_Student_DB')?['body/value']"
-                  ],
+                  "from": "@outputs('List_rows_present_in_Student_DB')?['body/value']",
                   "where": "@equals(items('For_each_in_Funding_DB')['Faculty PI'],items('For_each_in_Student_DB')?['Faculty Mentor'])"
                 }
               }
